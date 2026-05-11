@@ -1,6 +1,8 @@
-const express = require ("express");
-const cors = require ("cors");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import { connectDB } from "./config/configDb.js";
+import userRouter from "./routers/userRouter.js";
 
 const app = express();
 
@@ -13,6 +15,15 @@ app.get("/", (req, res) => {
     res.send("Backend funcionandoo");
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+
+app.use("/api/users", userRouter);
+
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en puerto ${PORT}`);
+    });
+}).catch((error) => {
+    console.error("Error al iniciar el servidor:", error);
+    process.exit(1);
 });
+
